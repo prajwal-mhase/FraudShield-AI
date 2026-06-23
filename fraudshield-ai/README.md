@@ -1,80 +1,90 @@
 # FraudShield AI
 
-Enterprise multi-agent fraud intelligence MVP for the ET AI Hackathon, with a polished investigator command center and hackathon-friendly demo fallbacks.
+FraudShield AI is a multi-agent fraud intelligence platform built as a hackathon-ready prototype for real-time fraud detection, behavioral anomaly analysis, fraud ring discovery, explainable decisions, investigator workflows, and compliance reporting.
 
-## What This Prototype Demonstrates
+It is designed to demonstrate what an enterprise fraud operations cockpit could feel like when specialist AI agents collaborate instead of producing a single opaque score.
 
-- Real-time transaction fraud scoring
-- Behavioral anomaly detection
-- Fraud ring discovery
-- Explainable AI decisions
-- Investigator workbench
-- Compliance/SAR report generation
-- AI copilot for analysts
-- Enterprise-style fraud command center UI
-- Demo-safe local fallbacks when backend services are unavailable
-- Demo-ready synthetic data and scripted judging flow
+## Why FraudShield AI
+
+Traditional fraud systems often stop at rules, isolated alerts, or black-box model outputs. FraudShield AI is built around a different idea:
+
+- one agent evaluates transaction-level risk
+- one agent compares current activity to behavioral norms
+- one agent identifies networked fraud patterns and mule-ring signals
+- one agent explains the decision in investigator language
+- one orchestrator turns signals into an operational action
+
+The result is a product that feels closer to an analyst workbench than a score-only API.
+
+## What The Prototype Includes
+
+- Real-time transaction risk analysis
+- Behavioral anomaly scoring
+- Fraud ring and shared-identifier investigation views
+- Explainable agent-level reasoning
+- Investigator case workbench
+- Suspicious Activity Report draft generation
+- AI copilot experience for analyst Q and A
+- Synthetic demo data and judge-friendly walkthrough
+- Polished frontend with offline-safe demo fallbacks
+
+## Product Surfaces
+
+The frontend includes eight core views:
+
+- Login
+- Fraud Command Center
+- Live Transaction Stream
+- Alert Queue
+- Investigator Workbench
+- Fraud Ring Graph
+- Compliance Report Studio
+- AI Copilot
+
+## Architecture
+
+```mermaid
+flowchart LR
+  UI[React Investigator UI] --> API[FastAPI]
+  API --> DB[(PostgreSQL)]
+  API --> Agents[Multi-Agent Orchestrator]
+  Agents --> TS[Transaction Sentinel]
+  Agents --> BP[Behavioral Profiler]
+  Agents --> NA[Network Analyst]
+  Agents --> XA[Explainability Agent]
+  Agents --> EO[Escalation Orchestrator]
+  API --> RAG[Compliance RAG]
+  RAG --> Q[(Qdrant or Local JSON)]
+```
 
 ## Tech Stack
 
-- Frontend: React, TypeScript, Vite, custom enterprise CSS, lucide icons
-- Backend: FastAPI, Pydantic, JWT-ready structure
+- Frontend: React, TypeScript, Vite, custom CSS, Lucide icons
+- Backend: FastAPI, Pydantic
 - Database: PostgreSQL
-- AI orchestration: LangGraph-compatible agent modules
-- LLM provider: OpenAI or Claude via environment variable
-- Vector DB: Qdrant-ready RAG module
-- Deployment: Vercel frontend, Render/Railway backend, Railway/Supabase Postgres
+- Agent layer: modular Python agents, LangGraph-compatible structure
+- Retrieval: local JSON-backed RAG prototype with Qdrant-ready design
+- Deployment targets: Vercel, Render, Railway
 
-## MVP Build Strategy
-
-### Category A: Must Build
-
-- Transaction analysis API
-- Dashboard metrics API
-- Alerts and case APIs
-- Deterministic AI agents with prompt templates
-- React dashboard, alerts, live transactions, workbench, graph, reports, copilot
-- PostgreSQL schema
-- Synthetic dataset generator
-- SAR report generator
-- Demo script
-
-### Category B: Can Simulate
-
-- LLM output through prompt-compatible deterministic fallback
-- Fraud ring graph using precomputed synthetic relationships
-- Qdrant retrieval using local mock store when Qdrant is unavailable
-- Real-time feed using polling or button-triggered demo analysis
-- Authentication using demo JWT-compatible login response
-
-### Category C: Future Roadmap
-
-- Streaming transaction ingestion with Kafka
-- Production graph analytics with Neo4j
-- Full LangGraph state machine deployment
-- Model monitoring and drift detection
-- Case assignment workflows
-- Regulator-specific filing integrations
-
-## Folder Structure
+## Repository Structure
 
 ```text
 fraudshield-ai/
-|-- frontend/              # React app and enterprise UI
-|-- backend/               # FastAPI app, routes, services, models
-|-- agents/                # Multi-agent fraud intelligence modules
-|-- rag/                   # Compliance RAG ingestion and retrieval
+|-- frontend/              # React UI and interactive demo experience
+|-- backend/               # FastAPI app, routes, models, demo store
+|-- agents/                # Multi-agent fraud logic
+|-- rag/                   # Compliance retrieval pipeline
 |-- database/              # PostgreSQL schema and seed data
-|-- datasets/              # Synthetic transactions and profiles
-|-- docs/                  # Architecture, API, demo, roadmap
-|-- scripts/               # Data generation and helper scripts
-|-- deployment/            # Vercel, Render, Railway configs
+|-- datasets/              # Generated synthetic data
+|-- docs/                  # Architecture, API, roadmap, demo flow
+|-- scripts/               # Data generation and demo utilities
+|-- deployment/            # Hosting configs
 `-- README.md
 ```
 
 ## Quick Start
 
-### Frontend Demo
+### Frontend
 
 ```bash
 cd frontend
@@ -84,24 +94,16 @@ npm run dev
 
 Open `http://127.0.0.1:5173`.
 
-The frontend has built-in mock API fallbacks, so the polished demo remains clickable even when the FastAPI backend is not running. This is intentional for hackathon demos and offline judging.
-
 ### Windows Launcher
 
-If your local path contains spaces or your shell has trouble keeping the Vite server alive:
+If your machine has trouble starting Vite from a path with spaces:
 
 ```bat
 cd frontend
 run-dev.cmd
 ```
 
-This starts Vite directly through Node with a fixed host and port:
-
-- URL: `http://127.0.0.1:5173`
-- Port: `5173`
-- Host: `127.0.0.1`
-
-### Build Check
+### Frontend Build Check
 
 ```bash
 cd frontend
@@ -120,33 +122,25 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-The FastAPI backend is the primary implementation target. The frontend mock layer only exists to keep the demo usable when Python is missing or the backend is intentionally offline.
+## Demo Mode
 
-## Current Demo Status
+The frontend includes built-in mock API fallbacks for the primary demo flows. That means the UI remains usable even if the FastAPI backend is not running.
 
-- The upgraded React UI is the primary runnable demo.
-- The FastAPI backend is fully scaffolded, but it requires a working Python installation.
-- If Python is unavailable, the frontend automatically uses local demo responses for login, dashboard stats, alerts, transaction analysis, case creation, network graph, and SAR generation.
+This is intentional for:
 
-## Frontend Experience
+- hackathon demos
+- public repo previews
+- offline judging
+- design-first walkthroughs
 
-The current UI includes:
-
-- Radar-style landing screen
-- Fraud command center dashboard
-- Live transaction decision trace
-- Alert queue with severity scoring
-- Investigator workbench with evidence timeline
-- Fraud ring graph visualization
-- Compliance report studio
-- AI copilot panel
+When the backend is available, the frontend can call the live API instead.
 
 ## Demo Credentials
 
 - Email: `analyst@fraudshield.ai`
 - Password: `demo123`
 
-## Core API
+## API Overview
 
 - `POST /auth/login`
 - `POST /transaction/analyze`
@@ -157,17 +151,41 @@ The current UI includes:
 - `GET /network/{account_id}`
 - `POST /reports/sar`
 
-## Sample Demo Flow
+More detail is available in [docs/api.md](</D:/Compititions - Hackathons/ET AI Hackathon 2.0/fraudshield-ai/docs/api.md>).
 
-1. Login through the landing screen.
-2. Review the fraud command center dashboard.
-3. Open Live Stream and analyze the normal transaction.
-4. Analyze the fraud-ring transaction.
-5. Inspect the multi-agent decision trace and recommended actions.
-6. Open Ring Graph to show mule-account and shared-device links.
-7. Create a case in Workbench and review evidence.
-8. Generate a SAR draft in Compliance.
-9. Use AI Copilot to explain the decision.
+## Demo Walkthrough
+
+1. Sign in through the landing screen.
+2. Review the Fraud Command Center dashboard.
+3. Open Live Transaction Stream and analyze a normal payment.
+4. Trigger the fraud-ring transaction scenario.
+5. Inspect the multi-agent decision trace.
+6. Open the Fraud Ring Graph to show linked accounts, device reuse, and risky IP infrastructure.
+7. Create a case in the Investigator Workbench.
+8. Generate a SAR draft in Compliance Report Studio.
+9. Use AI Copilot to explain why the transaction was blocked.
+
+## Current State
+
+This repository is a prototype, not a production banking platform.
+
+What is production-shaped:
+
+- service boundaries
+- data model
+- agent separation
+- API contracts
+- workflow framing
+- demo UX
+
+What is intentionally simplified:
+
+- authentication
+- persistence wiring
+- model training
+- graph analytics depth
+- regulator integrations
+- live vector database deployment
 
 ## Environment Variables
 
@@ -178,3 +196,20 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 QDRANT_URL=http://localhost:6333
 ```
+
+## Screenshots And Pitch Assets
+
+Useful supporting docs live in `docs/`:
+
+- `architecture.md`
+- `api.md`
+- `demo-flow.md`
+- `project-blueprint.md`
+- `roadmap.md`
+
+This structure makes the repository usable both as a codebase and as a submission asset.
+
+## License
+
+Add the license appropriate for your public release before publishing.
+

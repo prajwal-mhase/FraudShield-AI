@@ -1,23 +1,72 @@
 # RAG Module
 
-Purpose: retrieve compliance policies, internal fraud playbooks, and regulator guidance for explainability and SAR drafting.
+This module powers retrieval-augmented assistance for compliance, explainability, and Suspicious Activity Report drafting.
 
-MVP behavior:
+In the current prototype, it provides a lightweight local implementation that can later be upgraded to a production-style vector workflow without changing the surrounding product flow.
 
-- Ingest `.txt` and `.md` files from `rag/documents`
-- Chunk by 800 characters with 120 character overlap
-- Store chunk metadata in local JSON for demo
-- Compatible with future Qdrant migration
+## Purpose
 
-Files:
+The RAG layer exists to help FraudShield AI:
 
-- `ingest.py`: reads source documents and writes the local chunk store
-- `chunking.py`: handles fixed-size overlapping chunk generation
-- `retriever.py`: returns top matching chunks for analyst/compliance prompts
-- `documents/`: source playbooks and guidance
+- retrieve internal fraud playbooks
+- reference compliance guidance
+- ground analyst-facing explanations
+- support SAR narrative generation
 
-Current prototype behavior:
+## How It Works
 
-- backend and report flows can use deterministic logic without live vector infra
-- this module is ready for demoable local retrieval
-- moving to Qdrant later only requires swapping the storage layer, not the prompt flow
+The prototype pipeline is intentionally simple and portable:
+
+1. ingest markdown or text documents from `rag/documents`
+2. split them into overlapping chunks
+3. store chunk records in a local JSON file
+4. retrieve relevant chunks with a lightweight matching strategy
+
+## Files
+
+- `ingest.py`: reads source files and builds the local chunk store
+- `chunking.py`: creates overlapping text chunks
+- `retriever.py`: returns top matching chunks for a given query
+- `documents/`: source policy and playbook material
+
+## Default Chunking Strategy
+
+- chunk size: 800 characters
+- overlap: 120 characters
+
+This keeps the implementation small while still being representative of a real retrieval pipeline.
+
+## Generate The Local Store
+
+```bash
+python rag/ingest.py
+```
+
+This writes `vector_store.json` inside the `rag/` folder when documents are available.
+
+## Why Local JSON Instead Of A Live Vector DB
+
+For the prototype, local storage keeps setup friction low and makes the repo easier to run in constrained environments.
+
+The design is still compatible with a future migration to:
+
+- Qdrant
+- managed embedding services
+- richer retrieval and reranking
+
+## Current Scope
+
+This module is intended to support:
+
+- compliance Q and A
+- evidence-backed explanations
+- report drafting flows
+
+It is not yet a full production retrieval stack with embeddings, reranking, and access controls.
+
+## Related Files
+
+- [fraud_playbook.md](</D:/Compititions - Hackathons/ET AI Hackathon 2.0/fraudshield-ai/rag/documents/fraud_playbook.md>)
+- [reports.py](</D:/Compititions - Hackathons/ET AI Hackathon 2.0/fraudshield-ai/backend/app/routes/reports.py>)
+- [agents.py](</D:/Compititions - Hackathons/ET AI Hackathon 2.0/fraudshield-ai/backend/app/routes/agents.py>)
+
