@@ -207,4 +207,3 @@ Useful supporting docs live in `docs/`:
 - `project-blueprint.md`
 - `roadmap.md`
 
-This structure makes the repository usable both as a codebase and as a submission asset.
