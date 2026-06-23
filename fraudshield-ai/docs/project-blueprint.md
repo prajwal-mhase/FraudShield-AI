@@ -1,180 +1,102 @@
-# FraudShield AI Project Blueprint
+# Project Blueprint
+
+This document summarizes the intended shape of FraudShield AI as a product, codebase, and demo system.
+
+It is useful when you want a single document that explains what the repository contains and how the main pieces fit together.
 
 ## Repository Responsibilities
 
 | Folder | Purpose | Key Files |
 |---|---|---|
-| `frontend` | Analyst-facing enterprise UI | `src/main.tsx`, `src/styles.css` |
-| `backend` | FastAPI service and API contracts | `app/main.py`, `app/routes/*`, `app/models.py` |
-| `agents` | Multi-agent fraud engine | `transaction_sentinel.py`, `behavioral_profiler.py`, `network_analyst.py`, `explainability_agent.py`, `escalation_orchestrator.py`, `orchestrator.py` |
-| `rag` | Compliance retrieval module | `ingest.py`, `chunking.py`, `retriever.py`, `documents/*` |
-| `database` | PostgreSQL schema and seed data | `schema.sql`, `seed.sql` |
-| `datasets` | Generated synthetic demo data | `README.md`, generated CSVs |
-| `scripts` | Data generation utilities | `generate_mock_data.py` |
-| `docs` | Submission and engineering docs | `architecture.md`, `api.md`, `demo-flow.md`, `roadmap.md` |
-| `deployment` | Hosting configs | `render.yaml`, `vercel.json` |
+| `frontend` | Analyst-facing fraud operations UI | `src/main.tsx`, `src/styles.css`, `run-dev.cmd` |
+| `backend` | FastAPI service and API layer | `app/main.py`, `app/routes/*`, `app/models.py` |
+| `agents` | Specialist fraud intelligence logic | `transaction_sentinel.py`, `behavioral_profiler.py`, `network_analyst.py`, `explainability_agent.py`, `escalation_orchestrator.py`, `orchestrator.py` |
+| `rag` | Compliance and evidence retrieval | `ingest.py`, `chunking.py`, `retriever.py`, `documents/*` |
+| `database` | Relational schema and seed data | `schema.sql`, `seed.sql` |
+| `datasets` | Synthetic fraud demo data | `README.md`, generated CSVs |
+| `scripts` | Utility scripts and demo helpers | `generate_mock_data.py`, `demo-api.mjs` |
+| `docs` | Public documentation and submission support | `architecture.md`, `api.md`, `demo-flow.md`, `roadmap.md` |
+| `deployment` | Deployment config targets | `render.yaml`, `vercel.json` |
 
-## MVP Categories
+## Product Model
 
-### Category A: Must Build
+FraudShield AI is organized around a simple but expressive product model:
 
-- Transaction scoring endpoint
-- Multi-agent risk signals
-- Explainable decision output
-- Alert list
-- Case creation
-- Dashboard stats
-- Network graph endpoint
-- SAR draft endpoint
-- React pages for demo flow
-- Synthetic data script
+1. ingest or simulate a transaction
+2. analyze it through multiple specialist agents
+3. explain the result in plain investigator language
+4. visualize supporting network evidence
+5. escalate into an analyst workflow
+6. support compliance reporting
 
-### Category B: Can Simulate
-
-- LLM calls, by deterministic prompt-compatible fallback
-- Qdrant, by local JSON retriever
-- Streaming, by polling or button-triggered transaction submission
-- Authentication, by demo token response
-- Graph analytics, by generated network fixture
-
-### Category C: Future Roadmap
-
-- Kafka ingestion
-- Real model training and online features
-- Neo4j graph detection
-- Full LangGraph state machine
-- Human approval queues
-- Compliance filing integrations
-
-## AI Agents
+## Agent Roles
 
 ### Transaction Sentinel
 
-Purpose: score transaction-level risk.
-
-Input: transaction amount, merchant, country, channel, device, IP.
-
-Output: `score`, `label`, `reasons`.
-
-Pseudo code:
-
-```text
-score = base
-if amount is high: add risk
-if country is risky: add risk
-if channel is remote: add risk
-if merchant suggests rapid value movement: add risk
-return signal
-```
-
-Implementation: `agents/transaction_sentinel.py`
+Evaluates transaction-level fraud indicators such as amount, country, channel, merchant type, and remote-payment risk.
 
 ### Behavioral Profiler
 
-Purpose: compare event to customer's normal behavior.
-
-Input: transaction and behavioral profile fields.
-
-Output: anomaly score and behavioral reasons.
-
-Implementation: `agents/behavioral_profiler.py`
+Compares current activity against expected customer patterns and flags deviations such as unusual amount, timing, or device context.
 
 ### Network Analyst
 
-Purpose: detect mule accounts, shared devices, risky IPs, and ring patterns.
-
-Input: account, device, IP, beneficiary relationships.
-
-Output: network risk score and graph reasons.
-
-Implementation: `agents/network_analyst.py`
+Looks for shared devices, suspicious IP reuse, linked accounts, and ring-like fraud behavior.
 
 ### Explainability Agent
 
-Purpose: convert agent signals into investigator-ready explanation.
-
-Input: transaction, risk score, agent signals.
-
-Output: natural-language explanation, top drivers, counterfactual, next actions.
-
-Implementation: `agents/explainability_agent.py`
+Turns agent signals into a concise narrative that an investigator can understand quickly.
 
 ### Escalation Orchestrator
 
-Purpose: choose approve, step-up auth, hold, or block/escalate.
+Maps aggregate risk into a practical action such as approve, step up, hold for review, or block and escalate.
 
-Input: final risk score.
+## Backend Surface
 
-Output: decision and workflow actions.
+The primary backend endpoints are:
 
-Implementation: `agents/escalation_orchestrator.py`
+- `/auth/login`
+- `/transaction/analyze`
+- `/alerts`
+- `/case/create`
+- `/dashboard/stats`
+- `/agent/explain`
+- `/network/{account_id}`
+- `/reports/sar`
 
-## Backend API Design
+## Frontend Experience
 
-| Endpoint | Method | Purpose |
-|---|---|---|
-| `/auth/login` | POST | Demo analyst login |
-| `/transaction/analyze` | POST | Run multi-agent risk analysis |
-| `/alerts` | GET | List fraud alerts |
-| `/case/create` | POST | Create investigation case |
-| `/dashboard/stats` | GET | Dashboard metrics, trends, heatmap |
-| `/agent/explain` | POST | Explain risk decision |
-| `/network/{account_id}` | GET | Return fraud network graph |
-| `/reports/sar` | POST | Generate SAR draft |
+The UI is designed as an enterprise fraud command center rather than a generic demo dashboard.
 
-Validation is handled with Pydantic models in `backend/app/models.py`. Errors use FastAPI `HTTPException`.
+It currently includes:
 
-## Frontend Pages
+- a branded landing screen
+- a command-center dashboard
+- live transaction decision traces
+- alert queue and severity views
+- an investigator workbench
+- a fraud ring graph
+- compliance reporting surfaces
+- an AI copilot panel
 
-### Login
+## Prototype Boundaries
 
-Layout: centered brand panel.
+The current repository intentionally optimizes for:
 
-Interaction: demo login button calls `/auth/login`.
+- strong demo impact
+- clear product storytelling
+- realistic system boundaries
+- ease of local exploration
 
-### Dashboard
+It intentionally does not yet optimize for:
 
-Layout: metric cards, risk trend, agent activity, heatmap, live feed.
+- hardened authentication
+- production-scale persistence
+- real-time streaming infrastructure
+- advanced graph databases
+- regulated deployment controls
 
-API: `/dashboard/stats`.
-
-### Live Transactions
-
-Layout: normal/fraud transaction buttons and result panel.
-
-API: `/transaction/analyze`.
-
-### Fraud Alerts
-
-Layout: alert cards by severity and status.
-
-API: `/alerts`.
-
-### Investigator Workbench
-
-Layout: case creation and evidence area.
-
-API: `/case/create`.
-
-### Fraud Network Graph
-
-Layout: visual node cluster plus relationship list.
-
-API: `/network/ACC-1044`.
-
-### Compliance Reports
-
-Layout: SAR generation button and JSON draft preview.
-
-API: `/reports/sar`.
-
-### AI Copilot
-
-Layout: analyst Q&A panel.
-
-MVP: deterministic answer for judging. Future: connect to `/agent/explain` and RAG retrieval.
-
-## Deployment Architecture
+## Deployment Shape
 
 ```mermaid
 flowchart TD
@@ -185,28 +107,12 @@ flowchart TD
   Render --> LLM[OpenAI or Claude API]
 ```
 
-## GitHub Structure
+## Best Use Of This Document
 
-Use this repository root directly:
+Use this blueprint when you need:
 
-```text
-fraudshield-ai/
-  frontend/
-  backend/
-  agents/
-  rag/
-  database/
-  datasets/
-  docs/
-  scripts/
-  deployment/
-  README.md
-```
-
-Recommended branches:
-
-- `main`: demo-stable
-- `feat/frontend-polish`: UI improvements
-- `feat/agent-logic`: scoring improvements
-- `feat/deployment`: hosting setup
+- a quick architecture orientation
+- a repo overview for collaborators
+- a submission-support summary
+- a handoff document for future expansion
 

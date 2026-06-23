@@ -208,8 +208,3 @@ Useful supporting docs live in `docs/`:
 - `roadmap.md`
 
 This structure makes the repository usable both as a codebase and as a submission asset.
-
-## License
-
-Add the license appropriate for your public release before publishing.
-
